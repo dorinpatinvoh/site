@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="flou">
+        <h1 id="title">Survey Form</h1>
+        <p id="description">Please fill out this survey form.</p>
+
+        <form id="survey-form">
+            <label id="name-label" for="name">Name:</label>
+            <input type="text" id="name" placeholder="Enter your name" required><br>
+
+            <label id="email-label" for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter your email" required><br>
+
+            <label id="number-label" for="number">Age:</label>
+            <input type="number" id="number" placeholder="Enter your age" min="1" max="120" required><br>
+
+            <label for="dropdown">Select your role:</label>
+            <select id="dropdown">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+            </select><br>
+
+            <p>Do you like coding?</p>
+            <label for="yes">
+                <input type="radio" id="yes" name="coding" value="yes" class="inline" checked> Yes
+            </label>
+            <label for="no">
+                <input type="radio" id="no" name="coding" value="no" class="inline"> No
+            </label><br>
+
+            <p>Select your favorite programming languages:</p>
+            <label for="javascript">
+                <input type="checkbox" id="javascript" name="language" value="javascript" class="inline"> JavaScript
+            </label>
+            <label for="python">
+                <input type="checkbox" id="python" name="language" value="python" class="inline"> Python
+            </label><br>
+
+            <label for="comments">Any comments:</label><br>
+            <textarea id="comments" rows="4" cols="50"></textarea><br>
+
+            <input type="submit" id="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>

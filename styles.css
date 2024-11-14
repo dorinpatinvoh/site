@@ -1,0 +1,93 @@
+body {
+    background-image: url(https://cdn.freecodecamp.org/curriculum/css-cafe/beans.jpg);
+    background-attachment: fixed;
+    margin: 0; 
+    padding: 0; 
+    height: 100vh; 
+    width: 100vw;
+    color: #f5f6f7;
+    font-family: Tahoma;
+    overflow-x:hidden;
+}
+
+.flou {
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    height: 1000px; 
+    width: 100%;
+    background-color: rgba(123, 101, 230, 0.4);    
+}
+
+#survey-form {
+    width: 80%;
+    background-color: rgba(45, 42, 143,0.9);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    max-width: 500px;    
+}
+
+h1, p {
+    margin: 1em auto;
+    text-align: center;
+}
+
+h1 {
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+}
+
+p {
+    font-style: italic;
+}
+
+form {
+    width: 60vw;
+    max-width: 500px;
+    min-width: 300px;
+    margin: 0 auto;
+    padding-bottom: 2em;
+    border-radius: 10px;
+}
+
+label {
+    display: block;
+    margin: 0.5rem 0;
+}
+
+input, textarea {
+    background-color: #0a0a23;
+    border: 1px solid #0a0a23;
+    color: #ffffff;
+}
+
+input, textarea, select {
+    margin: 10px 0 0 0;
+    width: 100%;
+    min-height: 2em;
+}
+
+input[type="submit"] {
+    display: block;
+    width: 60%;
+    margin: 1em auto;
+    height: 2em;
+    font-size: 1.1rem;
+    background-color: #3b3b4f;
+    border-color: white;
+    min-width: 300px;
+}
+
+.inline {
+    display: inline;
+    width: unset;
+    margin: 0 0.5em 0 0;
+    vertical-align: middle; 
+}
