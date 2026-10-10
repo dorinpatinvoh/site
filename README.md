@@ -132,22 +132,52 @@ pip install pytest
 python -m pytest -v
 ```
 
-14 tests lancent un **faux site de connexion** (`tests/serveur_factice.py`, avec
+16 tests lancent un **faux site de connexion** (`tests/serveur_factice.py`, avec
 des champs `msisdn` / `cle_secrete` et un jeton CSRF) et vérifient :
-auto-détection des champs, connexion réussie, refus du site, message de
-configuration manquante, boucle IA complète avec un modèle simulé.
+auto-détection des champs, connexion réussie, refus du site, lecture du `.env`,
+message de configuration manquante, boucle IA complète avec un modèle simulé.
 
-## 7. Dépannage
+Les tests sont **isolés d'un éventuel `.env` local** : ils passent que tu aies
+rempli ton `.env` ou non.
+
+## 7. Cas concret : betPawa (www.betpawa.bj)
+
+`BOT_URL_SITE=https://www.betpawa.bj`, connexion par **numéro de téléphone +
+code PIN à 4 chiffres**.
+
+**À savoir avant de lancer quoi que ce soit :**
+
+- **Le site est derrière Cloudflare** (DNS → `2606:4700:…`) et son interface est
+  une application JavaScript. Le backend `http` a donc de fortes chances
+  d'échouer : passe à `BOT_BACKEND=navigateur` (section 5).
+- Si le numéro au format local est refusé, essaie le format international
+  (`229` + numéro sans le `0` initial).
+- ⚠️ **Les conditions d'utilisation des sites de paris interdisent l'accès
+  automatisé.** Un bot détecté peut entraîner la **clôture du compte et le gel
+  des fonds**. Assume ce risque, garde `BOT_DELAI_ACTIONS` ≥ 2 s, et ne fais pas
+  tourner le bot en continu.
+- ⚠️ **Ne saisis jamais tes identifiants ailleurs que dans `.env`.** Ce fichier
+  est ignoré par Git (`.gitignore` ligne 2) — vérifie avec `git status`, il ne
+  doit jamais apparaître.
+
+> Le connecteur n'a **pas pu être testé contre le site réel** depuis
+> l'environnement de développement : la sandbox bloque le TLS vers
+> `www.betpawa.bj` (`curl` → `SSL_ERROR_SYSCALL`, HTTP `000`). Les sélecteurs
+> seront donc peut-être à ajuster chez toi via `BOT_CHAMP_NUMERO` et
+> `BOT_CHAMP_MOT_DE_PASSE`.
+
+## 8. Dépannage
 
 | Symptôme | Solution |
 |---|---|
 | `Page de connexion introuvable` | renseigne `BOT_URL_CONNEXION` |
 | `Champ numéro introuvable` | renseigne `BOT_CHAMP_NUMERO` avec le `name=` exact |
 | Le site renvoie une erreur alors que le mot de passe est bon | le login passe par JavaScript → `BOT_BACKEND=navigateur` |
+| `Impossible de charger … SSLError` / page Cloudflare | backend `navigateur` ; sinon réseau filtrant ou pare-feu |
 | `L'API IA a répondu HTTP 401` | clé `IA_CLE_API` invalide ou expirée |
 | Connexion OK mais l'IA ne fait rien | `IA_CLE_API` est vide dans le `.env` |
 
-## 8. Bonnes pratiques
+## 9. Bonnes pratiques
 
 - N'automatise **que tes propres comptes**, et vérifie que les conditions
   d'utilisation du site l'autorisent.

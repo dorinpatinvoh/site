@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import pytest
 
 from bot.actions import executer
@@ -43,27 +45,65 @@ def journal_muet(_message: str) -> None:
 
 
 # ------------------------------------------------------------------ config .env
-def test_config_incomplete_signale_les_cles_manquantes():
+def test_config_incomplete_signale_les_cles_manquantes(tmp_path):
+    # chemin_env explicite : un `.env` local ne doit jamais fausser ce test
     with pytest.raises(ConfigIncomplete) as erreur:
-        Config.depuis_environnement()
+        Config.depuis_environnement(tmp_path / "absent.env")
     message = str(erreur.value)
     assert "BOT_NUMERO" in message
     assert "BOT_MOT_DE_PASSE" in message
     assert "BOT_URL_SITE" in message
 
 
-def test_config_lit_le_env(monkeypatch):
+def test_config_lit_le_env(monkeypatch, tmp_path):
     monkeypatch.setenv("BOT_NUMERO", "22997111111")
     monkeypatch.setenv("BOT_MOT_DE_PASSE", "mot de passe avec espaces")
     monkeypatch.setenv("BOT_URL_SITE", "https://exemple.com/")
     monkeypatch.setenv("BOT_MAX_TOURS", "7")
 
-    config = Config.depuis_environnement()
+    config = Config.depuis_environnement(tmp_path / "absent.env")
     assert config.numero == "22997111111"
     assert config.mot_de_passe == "mot de passe avec espaces"
     assert config.url_site == "https://exemple.com"  # barre finale retirée
     assert config.max_tours == 7
     assert config.backend == "http"
+
+
+def test_charge_env_depuis_un_vrai_fichier(monkeypatch, tmp_path):
+    """Commentaires, lignes vides et guillemets doivent être gérés."""
+    from bot.config import charge_env
+
+    for cle in CLEFS_ENV:
+        monkeypatch.delenv(cle, raising=False)
+
+    fichier = tmp_path / ".env"
+    fichier.write_text(
+        "# un commentaire\n"
+        "\n"
+        "BOT_NUMERO=22997111111\n"
+        'BOT_MOT_DE_PASSE="mot avec espaces"\n'
+        "BOT_URL_SITE=https://exemple.com/\n",
+        encoding="utf-8",
+    )
+
+    assert charge_env(fichier) == fichier
+    assert os.environ["BOT_NUMERO"] == "22997111111"
+    assert os.environ["BOT_MOT_DE_PASSE"] == "mot avec espaces"
+
+    config = Config.depuis_environnement(fichier)
+    assert config.url_site == "https://exemple.com"
+
+
+def test_charge_env_necrase_pas_une_variable_existante(monkeypatch, tmp_path):
+    """Une variable d'environnement déjà posée prime sur le fichier .env."""
+    from bot.config import charge_env
+
+    fichier = tmp_path / ".env"
+    fichier.write_text("BOT_NUMERO=valeur_du_fichier\n", encoding="utf-8")
+    monkeypatch.setenv("BOT_NUMERO", "valeur_du_shell")
+
+    charge_env(fichier)
+    assert os.environ["BOT_NUMERO"] == "valeur_du_shell"
 
 
 # ------------------------------------------------------------- auto-détection
