@@ -1,0 +1,8 @@
+requests>=2.31
+
+# Facultatif : uniquement si tu passes en BOT_BACKEND=navigateur
+# (installe aussi les navigateurs :  playwright install chromium)
+# playwright>=1.44
+
+# Facultatif : pour lancer les tests
+# pytest>=8.0
